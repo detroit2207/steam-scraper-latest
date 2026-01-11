@@ -1,0 +1,6 @@
+[project]
+name = "steam-acc-scraper"
+version = "0.1.0"
+
+[project.scripts]
+app = "vercel.app:app"
