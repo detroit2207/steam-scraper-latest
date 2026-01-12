@@ -24,5 +24,5 @@ def search_games(query: str):
 
 @app.get("/")
 def read_root():
-    return {"Hello": "World"}
+    return {"Hello": "Worldtest"}
 
