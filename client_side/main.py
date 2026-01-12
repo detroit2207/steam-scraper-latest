@@ -39,12 +39,12 @@ selected,_=process.communicate('\n'.join(suggestions))
 
 ##########################################################################################
 
+####################################### scraping credentials from pokopow ##########################################
 url = f"https://pokopow.com/{selected.strip()}"
 
 # print(url)
 
 html = requests.get(url).text
-
 
 soup = BeautifulSoup(html,"html.parser")
 
@@ -54,5 +54,8 @@ text = soup.get_text(separator="\n")
 usernames = re.findall(r'USER : (\S+)',text)
 passwords = re.findall(r'PASS : (\S+)',text)
 
+
 for username,password in zip( usernames,passwords ):
     print("\nUsername: ",username,"\nPassword: ",password)
+
+#################################################################################################
